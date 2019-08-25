@@ -79,6 +79,7 @@ function runCode () {
 			},
 			success: (result)=> {
 				console.log(result);
+				$('#list').append(`<li><div class="productItem"><span class="itemName">${result.name}</span><div class="itemButtons"><button class="editBtn">Edit</button><button class="deleteBtn">Delete</button></div></div></li>`)
 			}
 		});
 	});
@@ -125,5 +126,5 @@ function runCode () {
 		});
 	}
 
-	loadAll();
+	// loadAll();
 }
