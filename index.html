@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		<link href="css/main.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id="dialog1" class="dialog">
+			<div class="dialogBox">
+				<form class="inputForm">
+					<div class="inputs">
+						<input id="username" type="text" name="username" placeholder="Username">
+						<input id="password" type="password" name="password" placeholder="Password">
+					</div>
+					<div class="inputs">
+						<input id="age" type="number" name="age" placeholder="Age">
+						<input id="favColor" type="text" name="favColor" placeholder="Fav Color">
+					</div>
+					<input id="submitBtn2" type="submit" value="Add User">
+				</form>
+			</div>
+			<div id="dialogBackground1" class="dialogBackground"></div>
+		</div>
+		<div id="dialog2" class="dialog">
+			<div class="dialogBox">
+				<form class="inputForm">
+					<div class="inputs">
+						<input id="name" type="text" name="username" placeholder="Name">
+						<input id="email" type="password" name="password" placeholder="Email">
+						<input id="message" type="number" name="age" placeholder="Message">
+					</div>
+					<input id="submitBtn3" type="submit" value="Send Message">
+				</form>
+			</div>
+			<div id="dialogBackground2" class="dialogBackground"></div>
+		</div>
+		<div class="container">
+			<div class="extraButtons">
+				<button id="addUserBtn">Add User</button>
+				<button id="sendMessageBtn">Send message</button>
+			</div>
+			<form class="inputForm">
+				<div class="inputs">
+					<input id="productName" type="text" name="name" placeholder="Product Name">
+					<input id="productPrice" type="number" name="price" placeholder="Product Price">
+				</div>
+				<input id="submitBtn" type="submit" value="Add Product">
+			</form>
+			<div class="products">
+				<ul id="list">
+				</ul>
+			</div>
+		</div>
+		<script src="node_modules/jquery/dist/jquery.min.js"></script>
+		<script src="js/main.js"></script>
+	</body>
+</html>
