@@ -1,4 +1,5 @@
 let keys;
+let editing = false;
 $.ajax({
 	url: 'config.json',
 	type: 'GET',
@@ -36,25 +37,48 @@ function runCode () {
 		let productName = $('#productName').val();
 		let productPrice = $('#productPrice').val();
 
-		$.ajax({
-			url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/product/add/`,
-			type: 'POST',
-			data: {
-				name: productName,
-				price: productPrice
-			},
-			error: (err)=> {
-				console.log('There was an error');
-				console.log(err);
-			},
-			success: (result)=> {
-				if (result == 'Product Added') {
-					loadAll();
-				} else {
+		if (editing) {
+			let id = $('#productHiddenId').val();
+			$.ajax({
+				url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/product/update/id=${id}`,
+				type: 'PATCH',
+				data: {
+					name: productName,
+					price: productPrice
+				},
+				error: (err)=> {
+					console.log('There was an error');
+					console.log(err);
+				},
+				success: (result)=> {
 					console.log(result);
+					$('#productName').val(null);
+					$('#productPrice').val(null);
+					$('#submitBtn').text('Add Product').removeClass('edit');
+					$('#productHiddenId').val(null);
+					loadAll();
+					editing = false;
 				}
-			}
-		});
+			});
+		} else {
+			console.log('yeet');
+			$.ajax({
+				url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/product/add/`,
+				type: 'POST',
+				data: {
+					name: productName,
+					price: productPrice
+				},
+				error: (err)=> {
+					console.log('There was an error');
+					console.log(err);
+				},
+				success: (result)=> {
+					console.log(result);
+					loadAll();
+				}
+			});
+		}
 	});
 
 	$('#submitBtn2').click(()=> {
@@ -110,7 +134,7 @@ function runCode () {
 
 	function loadAll () {
 		$.ajax({
-			url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/all`,
+			url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/all_db`,
 			type: 'GET',
 			dataType: 'json',
 			error: (err)=> {
@@ -120,11 +144,33 @@ function runCode () {
 			success: (data)=> {
 				$('#list').html(null);
 				for (var i = 0; i < data.length; i++) {
-					$('#list').append(`<li><div class="productItem"><span class="itemName">${data[i].name}</span><div class="itemButtons"><button class="editBtn">Edit</button><button class="deleteBtn">Delete</button></div></div></li>`);
+					$('#list').append(`<li><div class="productItem"><span class="itemName">${data[i].name}</span><div class="itemButtons" data-id="${data[i]._id}"><button class="editBtn">Edit</button><button class="deleteBtn">Delete</button></div></div></li>`);
 				}
+				[].forEach.call(document.querySelectorAll('.editBtn'), (e)=> {
+					e.addEventListener('click', ()=> {
+						let id = e.parentNode.dataset.id;
+						$.ajax({
+							url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/db_id/id=${id}`,
+							type: 'GET',
+							dataType: 'json',
+							error: (err)=> {
+								console.log('There was an error');
+								console.log(err);
+							},
+							success: (result)=> {
+								console.log(result);
+								$('#productName').val(result.name);
+								$('#productPrice').val(result.price);
+								$('#submitBtn').text('Edit Product').addClass('edit');
+								$('#productHiddenId').val(result._id);
+								editing = true;
+							}
+						});
+					});
+				});
 			}
 		});
 	}
 
-	// loadAll();
+	loadAll();
 }

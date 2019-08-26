@@ -84,7 +84,7 @@
 	border-color: black;
 }
 
-.inputForm > input {
+.inputForm > input, .inputForm > button {
 	margin-top: 12px;
 	padding: 6px 16px;
 	background-color: #43A047;
@@ -155,3 +155,7 @@
 	background-color: #c62828;
 }
 
+.edit{
+	background-color: #FDD835 !important;
+	color: black !important;
+}
