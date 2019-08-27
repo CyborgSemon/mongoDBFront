@@ -31,6 +31,37 @@ function runCode () {
 		$('#dialog2').hide();
 	});
 
+	$('#dialogBackground3').click(()=> {
+		$('#dialog3').hide();
+		$('#pendingProduct').text(null);
+		$('#deleteDelete').attr('data-id', null);
+	});
+
+	$('#deleteCencel').click(()=> {
+		$('#dialog3').hide();
+		$('#pendingProduct').text(null);
+		$('#deleteDelete').attr('data-id', null);
+	});
+
+	$('#deleteDelete').click((e)=> {
+		let pendingId = e.target.dataset.id;
+
+		$.ajax({
+			url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/product/delete/id=${pendingId}`,
+			type: 'DELETE',
+			dataType: 'json',
+			error: (err)=> {
+				console.log('There was an error');
+				console.log(err);
+			},
+			success: (result)=> {
+				$(`[data-id='${pendingId}']`).parent().parent()[1].remove();
+				$('#dialog3').hide();
+				$('#pendingProduct').text(null);
+				$('#deleteDelete').attr('data-id', null);
+			}
+		});
+	});
 
 	$('#submitBtn').click(()=> {
 		event.preventDefault();
@@ -166,6 +197,14 @@ function runCode () {
 								editing = true;
 							}
 						});
+					});
+				});
+
+				[].forEach.call(document.querySelectorAll('.deleteBtn'), (e)=>{
+					e.addEventListener('click', ()=> {
+						$('#pendingProduct').text(e.parentNode.parentNode.children[0].innerText);
+						$('#deleteDelete').attr('data-id', e.parentNode.dataset.id);
+						$('#dialog3').show();
 					});
 				});
 			}
