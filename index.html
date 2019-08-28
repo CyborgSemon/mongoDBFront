@@ -8,14 +8,15 @@
 	<body>
 		<div id="dialog1" class="dialog">
 			<div class="dialogBox">
-				<form class="inputForm">
+				<h3>Register a user</h3>
+				<form class="inputForm" autocomplete="false">
 					<div class="inputs">
-						<input id="username" type="text" name="username" placeholder="Username">
-						<input id="password" type="password" name="password" placeholder="Password">
+						<input id="rUsername" type="text" name="username" placeholder="Username" required>
+						<input id="rPassword" type="password" name="password" placeholder="Password" required>
 					</div>
 					<div class="inputs">
-						<input id="age" type="number" name="age" placeholder="Age">
-						<input id="favColor" type="text" name="favColor" placeholder="Fav Color">
+						<input id="rAge" type="number" name="age" placeholder="Age" required>
+						<input id="rFavColor" type="text" name="favColor" placeholder="Fav Color" required>
 					</div>
 					<input id="submitBtn2" type="submit" value="Add User">
 				</form>
@@ -24,7 +25,7 @@
 		</div>
 		<div id="dialog2" class="dialog">
 			<div class="dialogBox">
-				<form class="inputForm">
+				<form class="inputForm" autocomplete="false">
 					<div class="inputs">
 						<input id="name" type="text" name="username" placeholder="Name">
 						<input id="email" type="password" name="password" placeholder="Email">
@@ -45,9 +46,23 @@
 			</div>
 			<div id="dialogBackground3" class="dialogBackground"></div>
 		</div>
+		<div id="dialog4" class="dialog">
+			<div class="dialogBox">
+				<h3>Login</h3>
+				<form class="inputForm" autocomplete="false">
+					<div class="inputs">
+						<input id="lUsername" type="text" name="username" placeholder="Username" required>
+						<input id="lPassword" type="password" name="password" placeholder="Password" required>
+					</div>
+					<input id="submitBtn4" type="submit" value="Add User">
+				</form>
+			</div>
+			<div id="dialogBackground4" class="dialogBackground"></div>
+		</div>
 		<div class="container">
 			<div class="extraButtons">
 				<button id="addUserBtn">Add User</button>
+				<button id="loginBtn">Login</button>
 				<button id="sendMessageBtn">Send message</button>
 			</div>
 			<form class="inputForm">

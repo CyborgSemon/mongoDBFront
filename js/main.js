@@ -23,6 +23,10 @@ function runCode () {
 		$('#dialog2').show();
 	});
 
+	$('#loginBtn').click(()=> {
+		$('#dialog4').show();
+	});
+
 	$('#dialogBackground1').click(()=> {
 		$('#dialog1').hide();
 	});
@@ -35,6 +39,10 @@ function runCode () {
 		$('#dialog3').hide();
 		$('#pendingProduct').text(null);
 		$('#deleteDelete').attr('data-id', null);
+	});
+
+	$('#dialogBackground4').click(()=> {
+		$('#dialog4').hide();
 	});
 
 	$('#deleteCencel').click(()=> {
@@ -114,29 +122,35 @@ function runCode () {
 
 	$('#submitBtn2').click(()=> {
 		event.preventDefault();
-		let username = $('#username').val();
-		let password = $('#password').val();
-		let age = $('#age').val();
-		let favColor = $('#favColor').val();
+		let username = $('#rUsername').val();
+		let password = $('#rPassword').val();
+		let age = $('#rAge').val();
+		let favColor = $('#rFavColor').val();
 
-		$.ajax({
-			url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/user/add/`,
-			type: 'POST',
-			data: {
-				username: username,
-				password: password,
-				age: age,
-				favColor: favColor
-			},
-			error: (err)=> {
-				console.log('There was an error');
-				console.log(err);
-			},
-			success: (result)=> {
-				console.log(result);
-				$('#list').append(`<li><div class="productItem"><span class="itemName">${result.name}</span><div class="itemButtons"><button class="editBtn">Edit</button><button class="deleteBtn">Delete</button></div></div></li>`)
-			}
-		});
+		if (username.trim() && password.trim() && age.trim() && favColor.trim()) {
+			$.ajax({
+				url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/user/add`,
+				type: 'POST',
+				data: {
+					username: username,
+					password: password,
+					age: age,
+					favColor: favColor
+				},
+				error: (err)=> {
+					console.log('There was an error');
+					console.log(err);
+				},
+				success: (result)=> {
+					console.log(result);
+					$('#dialog4').hide();
+					$('#rUsername').val(null);
+					$('#rPassword').val(null);
+					$('#rAge').val(null);
+					$('#rFavColor').val(null);
+				}
+			})
+		}
 	});
 
 	$('#submitBtn3').click(()=> {
@@ -161,6 +175,10 @@ function runCode () {
 				console.log(result);
 			}
 		});
+	});
+
+	$('#submitBtn4').click(()=> {
+
 	});
 
 	function loadAll () {
