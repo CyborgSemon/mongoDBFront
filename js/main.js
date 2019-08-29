@@ -178,7 +178,36 @@ function runCode () {
 	});
 
 	$('#submitBtn4').click(()=> {
-
+		event.preventDefault();
+		let username = $('#lUsername').val();
+		let password = $('#lPassword').val();
+		if (username.trim() && password.trim()) {
+			$.ajax({
+				url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/user/get`,
+				type: 'POST',
+				data: {
+					username: username,
+					password: password
+				},
+				error: (err)=> {
+					console.log('There is an error');
+					console.log(err);
+				},
+				success:(result)=> {
+					if (result == 'invalid user') {
+						console.log('wrong username');
+					} else if (result == 'invalid password') {
+						console.log('wrong password');
+					} else {
+						console.log('YEEET! yoou are logged in!');
+						console.log(result);
+						sessionStorage.setItem('userId', result._id);
+						sessionStorage.setItem('userName', result.username);
+						sessionStorage.setItem('userAge', result.age);
+					}
+				}
+			});
+		}
 	});
 
 	function loadAll () {
@@ -231,3 +260,4 @@ function runCode () {
 
 	loadAll();
 }
+console.log(sessionStorage);
