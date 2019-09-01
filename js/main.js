@@ -15,12 +15,86 @@ $.ajax({
 });
 
 function runCode () {
+	if (sessionStorage.userName) {
+		$('#buttonsBox').html(`<button id="addUserBtn">Add User</button>
+		<button id="logoutBtn">Logout</button>
+		<button id="sendMessageBtn">Send message</button>`);
+
+		$('#addProductForm').html(`<div class="inputs">
+			<input id="productName" type="text" name="name" placeholder="Product Name">
+			<input id="productPrice" type="number" name="price" placeholder="Product Price">
+		</div>
+		<input id="productHiddenId" type="hidden" value="">
+		<button id="submitBtn" type="submit">Add Product</button>`);
+
+		$('#logoutBtn').click(()=> {
+			sessionStorage.clear();
+			window.location.reload(false);
+		});
+
+		$('#sendMessageBtn').click(()=> {
+			$('#dialog2').show();
+		});
+
+		$('#dialogBackground2').click(()=> {
+			$('#dialog2').hide();
+		});
+
+		$('#submitBtn').click(()=> {
+			event.preventDefault();
+			let productName = $('#productName').val();
+			let productPrice = $('#productPrice').val();
+
+			if (editing) {
+				let id = $('#productHiddenId').val();
+				$.ajax({
+					url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/product/update/id=${id}`,
+					type: 'PATCH',
+					data: {
+						name: productName,
+						price: productPrice
+					},
+					error: (err)=> {
+						console.log('There was an error');
+						console.log(err);
+					},
+					success: (result)=> {
+						console.log(result);
+						$('#productName').val(null);
+						$('#productPrice').val(null);
+						$('#submitBtn').text('Add Product').removeClass('edit');
+						$('#productHiddenId').val(null);
+						loadAll();
+						editing = false;
+					}
+				});
+			} else {
+				console.log('yeet');
+				$.ajax({
+					url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/product/add/`,
+					type: 'POST',
+					data: {
+						name: productName,
+						price: productPrice
+					},
+					error: (err)=> {
+						console.log('There was an error');
+						console.log(err);
+					},
+					success: (result)=> {
+						console.log(result);
+						loadAll();
+					}
+				});
+			}
+		});
+	} else {
+		$('#buttonsBox').html(`<button id="addUserBtn">Add User</button><button id="loginBtn">Login</button>`);
+	}
+
+
 	$('#addUserBtn').click(()=> {
 		$('#dialog1').show();
-	});
-
-	$('#sendMessageBtn').click(()=> {
-		$('#dialog2').show();
 	});
 
 	$('#loginBtn').click(()=> {
@@ -29,10 +103,6 @@ function runCode () {
 
 	$('#dialogBackground1').click(()=> {
 		$('#dialog1').hide();
-	});
-
-	$('#dialogBackground2').click(()=> {
-		$('#dialog2').hide();
 	});
 
 	$('#dialogBackground3').click(()=> {
@@ -69,55 +139,6 @@ function runCode () {
 				$('#deleteDelete').attr('data-id', null);
 			}
 		});
-	});
-
-	$('#submitBtn').click(()=> {
-		event.preventDefault();
-		let productName = $('#productName').val();
-		let productPrice = $('#productPrice').val();
-
-		if (editing) {
-			let id = $('#productHiddenId').val();
-			$.ajax({
-				url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/product/update/id=${id}`,
-				type: 'PATCH',
-				data: {
-					name: productName,
-					price: productPrice
-				},
-				error: (err)=> {
-					console.log('There was an error');
-					console.log(err);
-				},
-				success: (result)=> {
-					console.log(result);
-					$('#productName').val(null);
-					$('#productPrice').val(null);
-					$('#submitBtn').text('Add Product').removeClass('edit');
-					$('#productHiddenId').val(null);
-					loadAll();
-					editing = false;
-				}
-			});
-		} else {
-			console.log('yeet');
-			$.ajax({
-				url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/product/add/`,
-				type: 'POST',
-				data: {
-					name: productName,
-					price: productPrice
-				},
-				error: (err)=> {
-					console.log('There was an error');
-					console.log(err);
-				},
-				success: (result)=> {
-					console.log(result);
-					loadAll();
-				}
-			});
-		}
 	});
 
 	$('#submitBtn2').click(()=> {
@@ -204,6 +225,8 @@ function runCode () {
 						sessionStorage.setItem('userId', result._id);
 						sessionStorage.setItem('userName', result.username);
 						sessionStorage.setItem('userAge', result.age);
+						$('#dialog4').hide();
+						window.location.reload(false);
 					}
 				}
 			});
@@ -222,38 +245,45 @@ function runCode () {
 			success: (data)=> {
 				$('#list').html(null);
 				for (var i = 0; i < data.length; i++) {
-					$('#list').append(`<li><div class="productItem"><span class="itemName">${data[i].name}</span><div class="itemButtons" data-id="${data[i]._id}"><button class="editBtn">Edit</button><button class="deleteBtn">Delete</button></div></div></li>`);
+					if (sessionStorage.length) {
+						$('#list').append(`<li><div class="productItem"><span class="itemName">${data[i].name}</span><div class="itemButtons" data-id="${data[i]._id}"><button class="editBtn">Edit</button><button class="deleteBtn">Delete</button></div></div></li>`);
+					} else {
+						$('#list').append(`<li><div class="productItem"><span class="itemName">${data[i].name}</span><div class="itemButtons" data-id="${data[i]._id}"></div></div></li>`);
+					}
+
 				}
-				[].forEach.call(document.querySelectorAll('.editBtn'), (e)=> {
-					e.addEventListener('click', ()=> {
-						let id = e.parentNode.dataset.id;
-						$.ajax({
-							url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/db_id/id=${id}`,
-							type: 'GET',
-							dataType: 'json',
-							error: (err)=> {
-								console.log('There was an error');
-								console.log(err);
-							},
-							success: (result)=> {
-								console.log(result);
-								$('#productName').val(result.name);
-								$('#productPrice').val(result.price);
-								$('#submitBtn').text('Edit Product').addClass('edit');
-								$('#productHiddenId').val(result._id);
-								editing = true;
-							}
+				if (sessionStorage.length) {
+					[].forEach.call(document.querySelectorAll('.editBtn'), (e)=> {
+						e.addEventListener('click', ()=> {
+							let id = e.parentNode.dataset.id;
+							$.ajax({
+								url: `${keys.SERVER_URL}:${keys.SERVER_PORT}/db_id/id=${id}`,
+								type: 'GET',
+								dataType: 'json',
+								error: (err)=> {
+									console.log('There was an error');
+									console.log(err);
+								},
+								success: (result)=> {
+									console.log(result);
+									$('#productName').val(result.name);
+									$('#productPrice').val(result.price);
+									$('#submitBtn').text('Edit Product').addClass('edit');
+									$('#productHiddenId').val(result._id);
+									editing = true;
+								}
+							});
 						});
 					});
-				});
 
-				[].forEach.call(document.querySelectorAll('.deleteBtn'), (e)=>{
-					e.addEventListener('click', ()=> {
-						$('#pendingProduct').text(e.parentNode.parentNode.children[0].innerText);
-						$('#deleteDelete').attr('data-id', e.parentNode.dataset.id);
-						$('#dialog3').show();
+					[].forEach.call(document.querySelectorAll('.deleteBtn'), (e)=>{
+						e.addEventListener('click', ()=> {
+							$('#pendingProduct').text(e.parentNode.parentNode.children[0].innerText);
+							$('#deleteDelete').attr('data-id', e.parentNode.dataset.id);
+							$('#dialog3').show();
+						});
 					});
-				});
+				}
 			}
 		});
 	}
